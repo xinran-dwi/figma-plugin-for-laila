@@ -2,6 +2,8 @@
 
 Turns a mobile screen into a 1728×1117 desktop screen, right next to it in your Figma file. 
 
+![Demo: select a mobile screen, click Create web version](docs/demo.gif)
+
 ## Install (once)
 
 1. Open [`dist/web-version-figma-plugin.zip`](dist/web-version-figma-plugin.zip) → click **↓ Download raw file** → unzip it.
