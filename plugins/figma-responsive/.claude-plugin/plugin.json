@@ -1,0 +1,11 @@
+{
+  "name": "figma-responsive",
+  "displayName": "Figma Responsive",
+  "version": "0.4.0",
+  "description": "Generate a polished 1728×1117 desktop version of any mobile screen in Figma. Learns the style from your file, with a Dagiga preset.",
+  "author": {
+    "name": "Xinran Ma"
+  },
+  "keywords": ["figma", "responsive", "design", "desktop", "mobile"],
+  "dependencies": ["figma@claude-plugins-official"]
+}

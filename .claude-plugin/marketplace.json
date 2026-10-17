@@ -1,0 +1,14 @@
+{
+  "name": "figma-responsive-tools",
+  "description": "Design tools for turning mobile Figma screens into desktop versions",
+  "owner": {
+    "name": "Xinran Ma"
+  },
+  "plugins": [
+    {
+      "name": "figma-responsive",
+      "source": "./plugins/figma-responsive",
+      "description": "Select a mobile screen in Figma, get a polished 1728×1117 desktop version next to it. Works for any product."
+    }
+  ]
+}

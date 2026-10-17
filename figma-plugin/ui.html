@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; font: 12px/1.45 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--figma-color-text, #1e1e1e); background: var(--figma-color-bg, #fff); }
+  .muted { color: var(--figma-color-text-secondary, #757575); }
+  .card { padding: 14px; border-radius: 10px; background: var(--figma-color-bg-secondary, #f5f5f5); }
+  .hint { display: flex; gap: 10px; align-items: center; }
+  .hint .icon { font-size: 22px; line-height: 1; }
+  .label { font-size: 11px; color: var(--figma-color-text-secondary, #757575); }
+  .name { font-weight: 600; font-size: 13px; word-break: break-word; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; }
+  .primary { width: 100%; height: 40px; margin-top: 12px; border: 0; font-size: 13px; font-weight: 600;
+    background: var(--figma-color-bg-brand, #0d99ff); color: var(--figma-color-text-onbrand, #fff); }
+  .small { height: 26px; padding: 0 10px; border: 1px solid var(--figma-color-border, #e6e6e6); background: var(--figma-color-bg, #fff); color: inherit; font-weight: 500; font-size: 11px; white-space: nowrap; }
+  .link { border: 0; background: none; padding: 0; color: var(--figma-color-text-brand, #0d99ff); font-weight: 500; }
+  button:disabled { opacity: .45; cursor: default; }
+  .progress { margin-top: 8px; min-height: 16px; font-size: 11px; color: var(--figma-color-text-secondary, #757575); text-align: center; }
+  .done { margin-top: 6px; padding: 12px; font-weight: 500; border-radius: 10px; background: var(--figma-color-bg-success-tertiary, #e8f8ef); }
+  .err { margin-top: 6px; padding: 10px; border-radius: 8px; background: var(--figma-color-bg-danger-tertiary, #fdecea); }
+  .ai { margin-top: 10px; width: 100%; text-align: left; padding: 12px; border-radius: 10px; border: 1px solid var(--figma-color-border, #e6e6e6);
+    background: var(--figma-color-bg, #fff); color: inherit; display: flex; gap: 10px; align-items: center; }
+  .ai:hover { background: var(--figma-color-bg-hover, #f5f5f5); }
+  .ai .spark { font-size: 20px; }
+  .ai .t { font-weight: 600; }
+  .ai .go { margin-left: auto; color: var(--figma-color-text-brand, #0d99ff); font-size: 16px; }
+  .ai.strong { border-color: var(--figma-color-border-brand, #0d99ff); }
+  h1 { margin: 10px 0 2px; font-size: 14px; }
+  .block { margin-top: 12px; padding: 12px; border-radius: 10px; background: var(--figma-color-bg-secondary, #f5f5f5); }
+  .block h2 { margin: 0 0 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .need { display: flex; gap: 8px; margin: 4px 0; }
+  .need .ic { width: 16px; flex: none; text-align: center; }
+  .step { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0; }
+  .num { flex: none; width: 18px; height: 18px; border-radius: 9px; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+    background: var(--figma-color-bg-brand, #0d99ff); color: var(--figma-color-text-onbrand, #fff); margin-top: 1px; }
+  .step .body { flex: 1; min-width: 0; }
+  .path { font-size: 11px; color: var(--figma-color-text-secondary, #757575); }
+  .check { display: flex; gap: 6px; align-items: center; margin-top: 8px; font-weight: 500; cursor: pointer; }
+  input[type=text] { width: 100%; font: inherit; color: inherit; background: var(--figma-color-bg, #fff); border: 1px solid var(--figma-color-border, #e6e6e6); border-radius: 6px; padding: 6px 8px; margin-top: 6px; }
+  .row { display: flex; gap: 6px; margin-top: 6px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- main view: one button -->
+<div id="mainView">
+  <div id="pick" class="card"></div>
+  <button id="go" class="primary" disabled>Create web version</button>
+  <div id="progress" class="progress"></div>
+  <div id="error" class="err hidden"></div>
+  <div id="done" class="done hidden"></div>
+  <button id="aiCard" class="ai hidden">
+    <span class="spark">✨</span>
+    <span><div class="t">Not quite right? Try with Claude (AI)</div><div class="muted" id="aiWhy">Claude can redo it with your Claude subscription. No Claude Code needed.</div></span>
+    <span class="go">→</span>
+  </button>
+</div>
+
+<!-- Claude view: plain-language guide to using the Claude app on this screen -->
+<div id="claudeView" class="hidden">
+  <button class="link" id="back">← Back</button>
+  <h1>✨ Let Claude do this screen</h1>
+  <div class="muted">Use the normal Claude app (claude.ai or the desktop app) with your Claude subscription. You don't need Claude Code.
+    Claude follows the same design rules as this plugin, but it can actually look at your screen, so it handles unusual designs better.</div>
+
+  <div class="block" id="setup">
+    <h2><span>First time only · about 5 min</span><button class="link hidden" id="setupToggle">Show steps</button></h2>
+    <div id="setupSteps">
+      <div class="step"><span class="num">1</span><div class="body"><div><b>Let Claude open your Figma files</b></div>
+        <div class="path">In Claude: Settings → Connectors → Figma → Connect</div></div><button class="small" data-open="connectors">Open</button></div>
+      <div class="step"><span class="num">2</span><div class="body"><div><b>Let Claude make changes in Figma</b></div>
+        <div class="path">Settings → Capabilities → turn on “Code execution and file creation”</div></div><button class="small" data-open="capabilities">Open</button></div>
+      <div class="step"><span class="num">3</span><div class="body"><div><b>Give Claude the web-version rulebook</b></div>
+        <div class="path">This file teaches Claude how to turn mobile screens into desktop ones. In Claude: Customize → Skills → + → Upload a skill →
+          pick <b>web-version.zip</b> (in the <b>claude-skill</b> folder of this plugin's download).</div></div></div>
+    </div>
+    <label class="check"><input type="checkbox" id="setupDone" /> I've done this</label>
+  </div>
+
+  <div class="block">
+    <h2>For this screen</h2>
+    <div class="step"><span class="num">1</span><div class="body">
+      <div class="path" style="margin-bottom:6px">Claude can't see what you clicked in Figma, so this copies a short message with a link to your screen.</div>
+      <button class="small" id="copy">Copy message for Claude</button>
+      <div id="needLink" class="hidden">
+        <div class="path" style="margin-top:6px">First, this file's link is needed (once per file): in Figma click <b>Share → Copy link</b>, then paste it here.</div>
+        <div class="row"><input type="text" id="fileUrl" placeholder="https://www.figma.com/design/…" style="margin:0" /><button class="small" id="saveUrl">Save</button></div>
+      </div>
+      <div id="copyMsg" class="path"></div>
+    </div></div>
+    <div class="step"><span class="num">2</span><div class="body"><b>Paste it into a new Claude chat and send</b>
+      <div class="path">Claude builds the web version in this file, next to your mobile screen. It takes a few minutes.</div></div><button class="small" data-open="new">Open Claude</button></div>
+  </div>
+
+  <div class="muted" style="margin-top:12px; font-size:11px">
+    Needs a Claude Pro, Max, Team or Enterprise plan, and edit access to this Figma file (your Drafts work).
+    Figma limits how often Claude can work in files: free and View seats only get a few runs a month.
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const post = msg => parent.postMessage({ pluginMessage: msg }, '*');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+let selection = null, last = null, busy = false, setupDone = false, showSteps = false, claude = null;
+
+function renderPick() {
+  const s = selection;
+  if (s && s.ok) {
+    $('pick').innerHTML = `<div class="label">Mobile screen</div><div class="name">${esc(s.name)}</div>`;
+  } else {
+    $('pick').innerHTML = `<div class="hint"><span class="icon">📱</span><div>
+      <div class="name">Click a mobile screen on the canvas</div>
+      ${s && s.reason ? `<div class="muted">${esc(s.reason)}</div>` : ''}</div></div>`;
+  }
+  $('go').disabled = busy || !(s && s.ok);
+}
+
+function renderDone() {
+  $('done').classList.toggle('hidden', !last);
+  if (last) $('done').textContent = `✓ Created “${last.name}”`;
+}
+function showAi(strong, why) {
+  $('aiCard').classList.remove('hidden');
+  $('aiCard').classList.toggle('strong', !!strong);
+  $('aiWhy').textContent = why || 'Claude can redo it with your Claude subscription. No Claude Code needed.';
+}
+function renderSetup() {
+  $('setupDone').checked = setupDone;
+  $('setupToggle').classList.toggle('hidden', !setupDone);
+  $('setupToggle').textContent = showSteps ? 'Hide steps' : 'Show steps';
+  $('setupSteps').classList.toggle('hidden', setupDone && !showSteps);
+}
+
+function setBusy(b, text = '') { busy = b; $('progress').textContent = text; renderPick(); }
+function showError(m) { $('error').textContent = m || ''; $('error').classList.toggle('hidden', !m); }
+function view(name) { $('mainView').classList.toggle('hidden', name !== 'main'); $('claudeView').classList.toggle('hidden', name !== 'claude'); $('copyMsg').textContent = ''; }
+
+function copyText(text) {
+  const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove(); return ok;
+}
+
+$('go').onclick = () => { showError(''); last = null; renderDone(); $('aiCard').classList.add('hidden'); setBusy(true, 'Starting…'); post({ type: 'generate' }); };
+$('aiCard').onclick = () => view('claude');
+$('back').onclick = () => view('main');
+document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => post({ type: 'open', page: b.dataset.open }));
+$('setupDone').onchange = e => { showSteps = false; post({ type: 'setup-done', done: e.target.checked }); };
+$('setupToggle').onclick = () => { showSteps = !showSteps; renderSetup(); };
+$('copy').onclick = () => {
+  $('needLink').classList.toggle('hidden', !(claude && claude.needLink));
+  if (!claude || claude.needLink) { $('copyMsg').textContent = ''; return; }
+  if (claude.error) { $('copyMsg').textContent = claude.error; return; }
+  $('copyMsg').textContent = copyText(claude.text) ? '✓ Copied. Now click “Open Claude” and paste it into the chat.' : 'Copy this: ' + claude.text;
+};
+$('saveUrl').onclick = () => post({ type: 'set-file-url', url: $('fileUrl').value });
+
+onmessage = e => {
+  const msg = e.data.pluginMessage; if (!msg) return;
+  if (msg.type === 'state') { selection = msg.selection; setupDone = msg.setupDone; claude = msg.claude; renderPick(); renderSetup(); }
+  if (msg.type === 'progress') $('progress').textContent = msg.text;
+  if (msg.type === 'result') {
+    last = msg.result; setBusy(false); renderDone();
+    showAi(last.lowConfidence, last.lowConfidence ? 'This screen was hard to read automatically. Claude usually does better.' : null);
+  }
+  if (msg.type === 'error') { setBusy(false); showError(msg.message); showAi(true, 'The plugin couldn’t handle this screen. Claude can try.'); }
+  if (msg.type === 'file-url') {
+    if (msg.ok) { $('needLink').classList.add('hidden'); $('copyMsg').textContent = '✓ Saved. Now click “Copy message for Claude”.'; }
+    else $('copyMsg').textContent = 'That doesn’t look like a Figma file link.';
+  }
+};
+// the panel grows and shrinks with its content
+new ResizeObserver(() => post({ type: 'resize', height: document.body.scrollHeight })).observe(document.body);
+post({ type: 'refresh' });
+</script>
+</body>
+</html>
