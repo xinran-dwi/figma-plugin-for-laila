@@ -1,6 +1,6 @@
 # Web Version for Figma
 
-Turns a mobile screen into a 1728×1117 desktop screen, right next to it in your Figma file. Free, no account needed.
+Turns a mobile screen into a 1728×1117 desktop screen, right next to it in your Figma file. 
 
 ## Install (once)
 
