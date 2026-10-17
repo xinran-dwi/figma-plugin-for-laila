@@ -31,13 +31,3 @@ Needs a Claude Pro, Max, Team or Enterprise plan.
 
 </details>
 
-<details>
-<summary>For maintainers</summary>
-
-<br>
-
-Edit `figma-plugin/src/*.js`, then run `scripts/build-figma-plugin.sh`. Never edit `code.js`.
-The Claude skill lives in `plugins/figma-responsive/skills/web-version/`. Claude Code users can install it with
-`/plugin marketplace add xinran-dwi/figma-plugin-for-laila`, then `/plugin install figma-responsive@figma-responsive-tools`.
-
-</details>
