@@ -1,4 +1,4 @@
-// Web Version, Figma plugin. Built from figma-plugin/src by scripts/build-figma-plugin.sh. Edit src/, not this file.
+// Desktop Version, Figma plugin. Built from figma-plugin/src by scripts/build-figma-plugin.sh. Edit src/, not this file.
 
 // ---------- common.js: shared helpers (standard Plugin API only, so the engine also runs via use_figma) ----------
 const DESKTOP_W = 1728, DESKTOP_H = 1117;
@@ -122,7 +122,7 @@ function isFlat(mobile) {
 function normalizeMobile(mobile, report) {
   if (!isFlat(mobile)) return { work: mobile, cleanup() {} };
   const work = mobile.clone();
-  work.name = mobile.name + ' (web version work copy)';
+  work.name = mobile.name + ' (desktop version work copy)';
   work.x = mobile.x; work.y = mobile.y;
   work.visible = false;
   const W = work.width, H = work.height;
@@ -446,7 +446,7 @@ function findDesktopParts(d) {
 
 function detectStyle(mobile, m, forced) {
   const page = pageOf(mobile);
-  const desktops = page.children.filter(n => n.type === 'FRAME' && n.visible && n.width >= 1200 && n.width <= 1920 && n.height >= 700 && !/— Web$/.test(n.name));
+  const desktops = page.children.filter(n => n.type === 'FRAME' && n.visible && n.width >= 1200 && n.width <= 1920 && n.height >= 700 && !/— (Web|Desktop)$/.test(n.name));
   const all = desktops.map(findDesktopParts);
   const dashboard = all.find(p => p.main && !p.modal && !p.sidePanel) || all.find(p => p.rail && !p.modal && !p.sidePanel) || null;
   const detail = all.find(p => p.sidePanel && !p.modal) || null;
@@ -469,7 +469,7 @@ function createDesktopFrame(ctx) {
   const { m, style } = ctx;
   const mobile = m.mobile, page = pageOf(mobile), GAP = 80;
   const F = figma.createFrame();
-  F.name = mobile.name + ' — Web';
+  F.name = mobile.name + ' — Desktop';
   F.resize(DESKTOP_W, DESKTOP_H);
   const ref = style.dashboard ? style.dashboard.frame : null;
   F.fills = clonePaints(ref ? ref.fills : mobile.fills);
@@ -1073,6 +1073,7 @@ async function buildWelcome(ctx) {
     if (b.kind === 'cta-zone') {
       const c = cloneInto(col, b.node, { fillWidth: false });
       if (inAL(c)) c.layoutSizingHorizontal = 'FIXED';
+      if (isAL(c)) { c.paddingLeft = c.paddingRight = 0; } // mobile side margins aren't needed in the desktop column
       if (isAL(c) || c.type === 'FRAME') c.resize(CTA_W, c.height);
       rampText(c, style.ramp);
       continue;
@@ -1177,7 +1178,7 @@ function inspectMobile(node) {
   // quick read for the UI: is this a mobile screen, and what would we do with it?
   if (!node || node.type !== 'FRAME') return { ok: false, reason: 'Select a frame (a mobile screen).' };
   if (node.width < 320 || node.width > 480) {
-    if (/— Web$/.test(node.name)) return { ok: false, web: true, reason: 'This is a generated web version.' };
+    if (/— (Web|Desktop)$/.test(node.name)) return { ok: false, web: true, reason: 'This is a generated desktop version.' };
     return { ok: false, reason: `This frame is ${Math.round(node.width)}px wide. Select a mobile screen (320–480 wide).` };
   }
   return { ok: true, id: node.id, name: node.name };
@@ -1245,7 +1246,7 @@ async function generateWebVersion(mobileId, opts = {}, onProgress = () => {}) {
   }
 }
 
-// ---------- main.js: plugin UI glue (one button: Create web version) ----------
+// ---------- main.js: plugin UI glue (one button: Create desktop version) ----------
 figma.showUI(__html__, { width: 320, height: 200, themeColors: true });
 
 const NS = 'webversion';
@@ -1267,7 +1268,7 @@ function selectionState() {
   const sel = figma.currentPage.selection;
   if (sel.length !== 1) return { ok: false, reason: sel.length ? 'Select just one screen.' : '' };
   const n = sel[0];
-  if (n.type === 'FRAME' && n.getSharedPluginData(NS, 'source')) return { ok: false, reason: 'This is a web version already. Click its mobile screen instead.' };
+  if (n.type === 'FRAME' && n.getSharedPluginData(NS, 'source')) return { ok: false, reason: 'This is a desktop version already. Click its mobile screen instead.' };
   try { return inspectMobile(n); } catch (e) { return { ok: false, reason: 'Could not read this frame: ' + e.message }; }
 }
 
@@ -1279,7 +1280,7 @@ function claudeRequest(sel) {
   if (!src) return { error: 'Click a mobile screen first.' };
   const link = nodeLink(src.id);
   if (!link) return { needLink: true };
-  return { text: `Make the desktop web version of this mobile screen: ${link}\nIf there is a frame named "${src.name} — Web" next to it, replace it.` };
+  return { text: `Make the desktop version of this mobile screen: ${link}\nIf there is a frame named "${src.name} — Desktop" (or "${src.name} — Web") next to it, replace it.` };
 }
 
 async function postState() {

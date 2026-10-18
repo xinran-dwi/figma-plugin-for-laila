@@ -1,9 +1,9 @@
 ---
-name: web-version
-description: Generate a polished, editable 1728×1117 desktop (web) version of a mobile screen in Figma, for any product. Learns the style from the file's own desktop screens, a preset (e.g. Dagiga), or the mobile screen itself. Use whenever the user shares a Figma link to a mobile frame (or has one selected) and asks for a web, desktop, responsive or large-screen version, e.g. "make the web version of this screen", "generate desktop for this mobile design", "do the responsive version", or runs /figma-responsive:web-version with a frame link.
+name: desktop-version
+description: Generate a polished, editable 1728×1117 desktop version of a mobile screen in Figma, for any product. Learns the style from the file's own desktop screens, a preset (e.g. Dagiga), or the mobile screen itself. Use whenever the user shares a Figma link to a mobile frame (or has one selected) and asks for a web, desktop, responsive or large-screen version, e.g. "make the desktop version of this screen", "make the web version", "generate desktop for this mobile design", "do the responsive version", or runs /figma-responsive:desktop-version with a frame link.
 ---
 
-# Web version: mobile screen → desktop screen in Figma
+# Desktop version: mobile screen → desktop screen in Figma
 
 Builds the desktop version **inside the same Figma file**, next to the mobile frame. It clones the real layers
 (never redrawn) and re-lays them out. The result should be close to final, not a wireframe.
@@ -28,12 +28,12 @@ Read before building:
 - No link: if a fileKey is known, call `get_metadata` with it; its "Currently selected nodes" block shows the selection
   (`use_figma` can't see the selection). Otherwise ask for the link and stop.
 - Verify the target is a FRAME 320–480 wide. If it's a component or a group, say so and stop.
-- **Replace request** (sent from the Web Version plugin's "Try with Claude" panel): "Make the desktop web version of this mobile
-  screen: <link>. If there is a frame named "<name> — Web" next to it, replace it." Build the new frame as usual. After it passes
-  the polish loop, put it at the old frame's x/y and delete the old frame. Only delete that exact `— Web` frame.
-- **Refine mode:** if the target is a desktop frame whose name ends in `— Web` (made by this skill or the Web Version
+- **Replace request** (sent from the Desktop Version plugin's "Try with Claude" panel): "Make the desktop version of this mobile
+  screen: <link>. If there is a frame named "<name> — Desktop" (or "<name> — Web") next to it, replace it." Build the new frame as usual. After it passes
+  the polish loop, put it at the old frame's x/y and delete the old frame. Only delete that exact `— Desktop` / `— Web` frame.
+- **Refine mode:** if the target is a desktop frame whose name ends in `— Desktop` or `— Web` (made by this skill or the Desktop Version
   Figma plugin), don't build a new one. Find its mobile source: the frame
-  with the same name minus `— Web`, usually just left of it. Then improve the existing frame in place:
+  with the same name minus that ending, usually just left of it. Then improve the existing frame in place:
   1. Apply the user's requested changes, if any.
   2. Re-check the layout map against `patterns.md` and fix anything the rules got wrong (wrong pattern, awkward sizing, missing content).
   3. Run the polish loop (step 5).
@@ -69,7 +69,7 @@ State the style source and pattern. This is the plan the build follows.
 ### 4. Build
 - Use 1–3 `use_figma` write calls. Each starts with the **prelude**, returns every created ID, and fills `report`.
   Order: place the frame → shell (or backdrop + dim for overlays) → content.
-- Name the new frame `<mobile name> — Web`. Place it **to the right of** the mobile frame (80px gap), or below the content if that spot is taken.
+- Name the new frame `<mobile name> — Desktop`. Place it **to the right of** the mobile frame (80px gap), or below the content if that spot is taken.
 - Only clone. **Never modify, move or delete** the original mobile frame or any existing desktop frame.
 - Change text sizes with `scaleTextNode` (rescale; works for every font). Change weight, wording or wrap only with `editText()`.
   It applies the change when the font loads, otherwise it leaves a to-do for the helper plugin.
@@ -96,5 +96,5 @@ Reply with:
 - **Expanded sections** and where their content came from
 - **Dropped or moved mobile elements**
 - **Text to-dos**, if any. These are changes that need fonts this environment couldn't load. Tell the user to run the
-  **Web Version** Figma plugin once in that file (it applies them automatically), or to apply them by hand (list layer + change).
+  **Desktop Version** Figma plugin once in that file (it applies them automatically), or to apply them by hand (list layer + change).
 - Anything guessed or still imperfect.

@@ -51,6 +51,7 @@ async function buildWelcome(ctx) {
     if (b.kind === 'cta-zone') {
       const c = cloneInto(col, b.node, { fillWidth: false });
       if (inAL(c)) c.layoutSizingHorizontal = 'FIXED';
+      if (isAL(c)) { c.paddingLeft = c.paddingRight = 0; } // mobile side margins aren't needed in the desktop column
       if (isAL(c) || c.type === 'FRAME') c.resize(CTA_W, c.height);
       rampText(c, style.ramp);
       continue;

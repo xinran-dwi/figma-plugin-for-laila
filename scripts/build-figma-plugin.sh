@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds figma-plugin/code.js from figma-plugin/src/*.js (plain concatenation, no npm needed).
-#   scripts/build-figma-plugin.sh                      → figma-plugin/code.js + dist/web-version-figma-plugin.zip
+#   scripts/build-figma-plugin.sh                      → figma-plugin/code.js + dist/desktop-version-figma-plugin.zip
 #   scripts/build-figma-plugin.sh test <footer.js>     → dist/test-bundle.js (engine only + footer, comments stripped)
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -29,14 +29,14 @@ sys.stdout.write("\n".join(out))
 fi
 
 {
-  echo "// Web Version, Figma plugin. Built from figma-plugin/src by scripts/build-figma-plugin.sh. Edit src/, not this file."
+  echo "// Desktop Version, Figma plugin. Built from figma-plugin/src by scripts/build-figma-plugin.sh. Edit src/, not this file."
   for f in "${ENGINE[@]}" main.js; do echo; cat "$src/$f"; done
 } > "$root/figma-plugin/code.js"
 node --check "$root/figma-plugin/code.js"
 echo "Built figma-plugin/code.js ($(wc -c < "$root/figma-plugin/code.js" | tr -d " ") chars)"
 # the Claude skill ships in the same download (Claude app → Customize → Skills → Upload)
 "$root/scripts/package-skill.sh" >/dev/null
-mkdir -p "$root/figma-plugin/claude-skill" && cp "$root/dist/web-version.zip" "$root/figma-plugin/claude-skill/web-version.zip"
-rm -f "$root/dist/web-version-figma-plugin.zip"
-(cd "$root" && zip -qr dist/web-version-figma-plugin.zip figma-plugin -x 'figma-plugin/src/*' '*.DS_Store')
-echo "Built dist/web-version-figma-plugin.zip"
+mkdir -p "$root/figma-plugin/claude-skill" && rm -f "$root/figma-plugin/claude-skill/"*.zip && cp "$root/dist/desktop-version.zip" "$root/figma-plugin/claude-skill/desktop-version.zip"
+rm -f "$root/dist/desktop-version-figma-plugin.zip"
+(cd "$root" && zip -qr dist/desktop-version-figma-plugin.zip figma-plugin -x 'figma-plugin/src/*' '*.DS_Store')
+echo "Built dist/desktop-version-figma-plugin.zip"

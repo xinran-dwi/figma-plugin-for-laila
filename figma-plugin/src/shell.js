@@ -3,7 +3,7 @@ function createDesktopFrame(ctx) {
   const { m, style } = ctx;
   const mobile = m.mobile, page = pageOf(mobile), GAP = 80;
   const F = figma.createFrame();
-  F.name = mobile.name + ' — Web';
+  F.name = mobile.name + ' — Desktop';
   F.resize(DESKTOP_W, DESKTOP_H);
   const ref = style.dashboard ? style.dashboard.frame : null;
   F.fills = clonePaints(ref ? ref.fills : mobile.fills);

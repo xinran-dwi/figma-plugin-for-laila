@@ -27,7 +27,7 @@ function findDesktopParts(d) {
 
 function detectStyle(mobile, m, forced) {
   const page = pageOf(mobile);
-  const desktops = page.children.filter(n => n.type === 'FRAME' && n.visible && n.width >= 1200 && n.width <= 1920 && n.height >= 700 && !/— Web$/.test(n.name));
+  const desktops = page.children.filter(n => n.type === 'FRAME' && n.visible && n.width >= 1200 && n.width <= 1920 && n.height >= 700 && !/— (Web|Desktop)$/.test(n.name));
   const all = desktops.map(findDesktopParts);
   const dashboard = all.find(p => p.main && !p.modal && !p.sidePanel) || all.find(p => p.rail && !p.modal && !p.sidePanel) || null;
   const detail = all.find(p => p.sidePanel && !p.modal) || null;

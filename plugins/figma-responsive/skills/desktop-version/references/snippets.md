@@ -24,7 +24,7 @@ Consequences:
   several texts. Its children's positions scale too, and nested text ends up tiny or misplaced.
 - **Weight, wording and wrap mode go through `editText()`.** It applies the change when the fonts load. Otherwise it
   records a **text to-do** in shared plugin data (namespace `webversion`, key `todo`). The companion Figma plugin
-  The Web Version Figma plugin applies those to-dos automatically when it opens with the user's local fonts. Format:
+  The Desktop Version Figma plugin applies those to-dos automatically when it opens with the user's local fonts. Format:
   `{ "fontFamily"?: string, "fontStyle"?: string, "characters"?: string, "textAutoResize"?: "HEIGHT"|"WIDTH_AND_HEIGHT", "reason": string }`
 - **Single-line text can't be made to wrap.** Before narrowing a column, measure its natural width (`naturalWidth`
   below) and size the column to at least that.
@@ -141,7 +141,7 @@ Signals to note: the Tab Bar's lime label (active tab), any row wider than the f
 
 ```js
 const near = (a, b, tol) => Math.abs(a - b) <= tol;
-const desktops = figma.currentPage.children.filter(n => n.type === 'FRAME' && near(n.width, 1728, 2) && near(n.height, 1117, 2) && !/— Web/.test(n.name));
+const desktops = figma.currentPage.children.filter(n => n.type === 'FRAME' && near(n.width, 1728, 2) && near(n.height, 1117, 2) && !/— (Web|Desktop)/.test(n.name));
 return desktops.map(d => {
   const kids = d.children.filter(c => c.visible);
   const pick = f => { const k = kids.find(f); return k ? k.id : null; };
@@ -182,7 +182,7 @@ if (others.some(n => overlaps(spot, n))) {
 ```js
 const ref = await figma.getNodeByIdAsync('DASHBOARD_DESKTOP_ID');
 const F = figma.createFrame();
-F.name = mobile.name + ' — Web';
+F.name = mobile.name + ' — Desktop';
 F.resize(1728, 1117); F.x = spot.x; F.y = spot.y;
 F.fills = clonePaints(ref.fills);
 F.cornerRadius = typeof ref.cornerRadius === 'number' ? ref.cornerRadius : 0;
@@ -228,7 +228,7 @@ const active = tabItems.find(it => counts[colorKey(it)] === 1);
 const accent = active ? active.findOne(n => n.type === 'TEXT').fills[0].color : null;
 
 const W = 1728, H = 1117, SIDEBAR = 248;
-const F = figma.createFrame(); F.name = mobile.name + ' — Web'; F.resize(W, H);
+const F = figma.createFrame(); F.name = mobile.name + ' — Desktop'; F.resize(W, H);
 F.x = spot.x; F.y = spot.y; F.fills = clonePaints(mobile.fills); F.clipsContent = true;
 const side = figma.createAutoLayout('VERTICAL', { name: 'Sidebar', itemSpacing: 32, paddingTop: 32, paddingLeft: 20, paddingRight: 20 });
 F.appendChild(side); side.x = 0; side.y = 0; side.resize(SIDEBAR, H);

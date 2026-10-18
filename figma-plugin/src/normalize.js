@@ -12,7 +12,7 @@ function isFlat(mobile) {
 function normalizeMobile(mobile, report) {
   if (!isFlat(mobile)) return { work: mobile, cleanup() {} };
   const work = mobile.clone();
-  work.name = mobile.name + ' (web version work copy)';
+  work.name = mobile.name + ' (desktop version work copy)';
   work.x = mobile.x; work.y = mobile.y;
   work.visible = false;
   const W = work.width, H = work.height;

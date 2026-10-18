@@ -7,7 +7,7 @@ function inspectMobile(node) {
   // quick read for the UI: is this a mobile screen, and what would we do with it?
   if (!node || node.type !== 'FRAME') return { ok: false, reason: 'Select a frame (a mobile screen).' };
   if (node.width < 320 || node.width > 480) {
-    if (/— Web$/.test(node.name)) return { ok: false, web: true, reason: 'This is a generated web version.' };
+    if (/— (Web|Desktop)$/.test(node.name)) return { ok: false, web: true, reason: 'This is a generated desktop version.' };
     return { ok: false, reason: `This frame is ${Math.round(node.width)}px wide. Select a mobile screen (320–480 wide).` };
   }
   return { ok: true, id: node.id, name: node.name };

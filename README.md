@@ -1,17 +1,17 @@
-# Web Version for Figma
+# Desktop Version for Figma
 
 Turns a mobile screen into a 1728×1117 desktop screen, right next to it in your Figma file. 
 
-![Demo: select a mobile screen, click Create web version](docs/demo.gif)
+![Demo: select a mobile screen, click Create desktop version](docs/demo.gif)
 
 ## Install (once)
 
-1. Open [`dist/web-version-figma-plugin.zip`](dist/web-version-figma-plugin.zip) → click **↓ Download raw file** → unzip it.
+1. Open [`dist/desktop-version-figma-plugin.zip`](dist/desktop-version-figma-plugin.zip) → click **↓ Download raw file** → unzip it.
 2. In the **Figma desktop app**: **Plugins → Development → Import plugin from manifest…** → pick `figma-plugin/manifest.json`.
 
 ## Use
 
-**Plugins → Development → Web Version** → click a mobile screen → **Create web version**.
+**Plugins → Development → Desktop Version** → click a mobile screen → **Create desktop version**.
 
 - Your mobile screen is never changed. To undo, delete the new frame.
 - Layers ending in "(duplicate)" are copies added to fill rows. Swap in real content.
@@ -27,7 +27,7 @@ Needs a Claude Pro, Max, Team or Enterprise plan.
 **First time:**
 1. In Claude: **Settings → Connectors → Figma → Connect**.
 2. **Settings → Capabilities** → turn on **Code execution and file creation**.
-3. **Customize → Skills → + → Upload a skill** → pick `figma-plugin/claude-skill/web-version.zip` from your download.
+3. **Customize → Skills → + → Upload a skill** → pick `figma-plugin/claude-skill/desktop-version.zip` from your download.
 
 **Then:** in the plugin, click **Try with Claude → Copy message for Claude**, paste it into a new Claude chat and send.
 

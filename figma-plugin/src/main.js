@@ -1,4 +1,4 @@
-// ---------- main.js: plugin UI glue (one button: Create web version) ----------
+// ---------- main.js: plugin UI glue (one button: Create desktop version) ----------
 figma.showUI(__html__, { width: 320, height: 200, themeColors: true });
 
 const NS = 'webversion';
@@ -20,7 +20,7 @@ function selectionState() {
   const sel = figma.currentPage.selection;
   if (sel.length !== 1) return { ok: false, reason: sel.length ? 'Select just one screen.' : '' };
   const n = sel[0];
-  if (n.type === 'FRAME' && n.getSharedPluginData(NS, 'source')) return { ok: false, reason: 'This is a web version already. Click its mobile screen instead.' };
+  if (n.type === 'FRAME' && n.getSharedPluginData(NS, 'source')) return { ok: false, reason: 'This is a desktop version already. Click its mobile screen instead.' };
   try { return inspectMobile(n); } catch (e) { return { ok: false, reason: 'Could not read this frame: ' + e.message }; }
 }
 
@@ -32,7 +32,7 @@ function claudeRequest(sel) {
   if (!src) return { error: 'Click a mobile screen first.' };
   const link = nodeLink(src.id);
   if (!link) return { needLink: true };
-  return { text: `Make the desktop web version of this mobile screen: ${link}\nIf there is a frame named "${src.name} — Web" next to it, replace it.` };
+  return { text: `Make the desktop version of this mobile screen: ${link}\nIf there is a frame named "${src.name} — Desktop" (or "${src.name} — Web") next to it, replace it.` };
 }
 
 async function postState() {
