@@ -45,6 +45,7 @@
 </style>
 </head>
 <body>
+<div id="app">
 
 <!-- main view: one button -->
 <div id="mainView">
@@ -100,6 +101,7 @@
     Needs a Claude Pro, Max, Team or Enterprise plan, and edit access to this Figma file (your Drafts work).
     Figma limits how often Claude can work in files: free and View seats only get a few runs a month.
   </div>
+</div>
 </div>
 
 <script>
@@ -175,8 +177,14 @@ onmessage = e => {
     else $('copyMsg').textContent = 'That doesn’t look like a Figma file link.';
   }
 };
-// the panel grows and shrinks with its content
-new ResizeObserver(() => post({ type: 'resize', height: document.body.scrollHeight })).observe(document.body);
+// the panel grows and shrinks with its content (measure the content itself, not the page, which fills the whole panel)
+let lastH = 0;
+function fit() {
+  const h = Math.ceil($('app').getBoundingClientRect().height) + 32; // + body padding
+  if (Math.abs(h - lastH) > 1) { lastH = h; post({ type: 'resize', height: h }); }
+}
+new ResizeObserver(fit).observe($('app'));
+fit();
 post({ type: 'refresh' });
 </script>
 </body>

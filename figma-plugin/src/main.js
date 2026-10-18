@@ -1,5 +1,5 @@
 // ---------- main.js: plugin UI glue (one button: Create web version) ----------
-figma.showUI(__html__, { width: 320, height: 320, themeColors: true });
+figma.showUI(__html__, { width: 320, height: 200, themeColors: true });
 
 const NS = 'webversion';
 const CLAUDE_URLS = { connectors: 'https://claude.ai/settings/connectors', capabilities: 'https://claude.ai/settings/capabilities', new: 'https://claude.ai/new' };
@@ -76,7 +76,7 @@ figma.ui.onmessage = async msg => {
   try {
     if (msg.type === 'refresh') return postState();
     if (msg.type === 'generate') { await generate(); return postState(); }
-    if (msg.type === 'resize') { figma.ui.resize(320, Math.max(240, Math.min(720, Math.ceil(msg.height)))); return; }
+    if (msg.type === 'resize') { figma.ui.resize(320, Math.max(140, Math.min(720, Math.ceil(msg.height)))); return; }
     if (msg.type === 'open') { if (CLAUDE_URLS[msg.page]) figma.openExternal(CLAUDE_URLS[msg.page]); return; }
     if (msg.type === 'setup-done') { await figma.clientStorage.setAsync('claudeSetupDone', !!msg.done); return postState(); }
     if (msg.type === 'set-file-url') {
